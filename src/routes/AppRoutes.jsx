@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import MainLayout from '@layout/MainLayout';
 import HomePage from '@pages/HomePage';
+import ReportsPage from '@pages/Reports';
 
 /**
  * Application Routes Configuration
@@ -14,6 +15,7 @@ const AppRoutes = () => {
         <Route element={<MainLayout />}>
           {/* Home Page */}
           <Route index element={<HomePage />} />
+          <Route path="/reports" element={<ReportsPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

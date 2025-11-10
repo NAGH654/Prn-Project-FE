@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { apiService } from '@services/api';
 import './SessionSelector.css';
 
-export default function SessionSelector({ onSessionChange }) {
+export default function SessionSelector({ onSessionChange, onExamChange }) {
   const [sessions, setSessions] = useState([]);
   const [selectedSessionId, setSelectedSessionId] = useState('');
   const [loading, setLoading] = useState(true);
@@ -19,9 +19,10 @@ export default function SessionSelector({ onSessionChange }) {
       const data = await apiService.getAllSessions();
       setSessions(data);
       if (data.length > 0) {
-        const firstSession = data[0].sessionId;
-        setSelectedSessionId(firstSession);
-        onSessionChange?.(firstSession);
+        const first = data[0];
+        setSelectedSessionId(first.sessionId);
+        onSessionChange?.(first.sessionId);
+        if (first.examId) onExamChange?.(first.examId);
       }
     } catch (err) {
       setError(err.message);
@@ -35,6 +36,8 @@ export default function SessionSelector({ onSessionChange }) {
     const sessionId = e.target.value;
     setSelectedSessionId(sessionId);
     onSessionChange?.(sessionId);
+    const selected = sessions.find(s => s.sessionId === sessionId);
+    if (selected?.examId) onExamChange?.(selected.examId);
   };
 
   if (loading) {

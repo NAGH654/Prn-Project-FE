@@ -113,3 +113,76 @@
 .lookup-btn:hover {
   background: #535bf2;
 }
+
+/* Student selector enhancements */
+.student-selector {
+  max-height: 420px;
+  overflow: hidden;
+}
+
+.student-selector-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.student-count {
+  color: #666;
+  font-size: 13px;
+}
+
+.student-search {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.student-search:focus {
+  outline: none;
+  border-color: #646cff;
+}
+
+.student-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px;
+  max-height: 320px;
+  overflow: auto;
+  padding-right: 6px;
+}
+
+.student-chip {
+  background: #646cff;
+  color: white;
+  border: none;
+  border-radius: 999px;
+  padding: 8px 12px;
+  text-align: left;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.student-chip:hover { background: #535bf2; }
+
+.student-code { font-weight: 700; }
+.student-name { opacity: 0.95; }
+
+/* Tabs */
+.tabbed-view { margin-top: 16px; }
+.tabs { display: flex; gap: 8px; margin-bottom: 12px; }
+.tab {
+  background: #eee;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #333;
+  font-weight: 600;
+}
+.tab.active { background: #646cff; color: #fff; }

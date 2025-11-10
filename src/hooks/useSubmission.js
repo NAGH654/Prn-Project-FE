@@ -10,11 +10,26 @@ export const useSubmission = () => {
   const [images, setImages] = useState([]);
   const [loadingImages, setLoadingImages] = useState(false);
   const [lastSubmissionId, setLastSubmissionId] = useState(null);
+  const [createdSubmissions, setCreatedSubmissions] = useState([]);
+  const [text, setText] = useState('');
+  const [loadingText, setLoadingText] = useState(false);
 
-  const handleSessionChange = (sessionId) => {
+  const handleSessionChange = async (sessionId) => {
     setSelectedSessionId(sessionId);
     setImages([]);
     setLastSubmissionId(null);
+    try {
+      if (sessionId) {
+        const students = await apiService.getSessionStudents(sessionId);
+        setCreatedSubmissions(students || []);
+      } else {
+        setCreatedSubmissions([]);
+      }
+      setText('');
+    } catch (e) {
+      console.error('Failed to load session students', e);
+      setCreatedSubmissions([]);
+    }
   };
 
   const handleUpload = async (sessionId, file, isNestedZip = false) => {
@@ -24,11 +39,20 @@ export const useSubmission = () => {
         ? await apiService.uploadNestedZipSubmission(sessionId, file)
         : await apiService.uploadSubmission(sessionId, file);
 
-      if (result.submissionsCreated > 0) {
-        // Auto-load images after a delay to allow backend processing
-        setTimeout(() => {
-          loadImagesForLatestSubmission(sessionId);
-        }, 2000);
+      const list = result.createdSubmissions || result.CreatedSubmissions || [];
+      setCreatedSubmissions(list);
+
+      if (list.length > 0) {
+        const first = list[0];
+        const id = first.submissionId || first.SubmissionId;
+        if (id) {
+          setLastSubmissionId(id);
+          // For single ZIP upload, auto show images immediately
+          if (!isNestedZip) {
+            await loadImagesForSubmission(id);
+            await loadTextForSubmission(id);
+          }
+        }
       }
 
       return result;
@@ -39,20 +63,7 @@ export const useSubmission = () => {
       setUploading(false);
     }
   };
-
-  const loadImagesForLatestSubmission = async (sessionId) => {
-    setLoadingImages(true);
-    try {
-      // Note: In a real scenario, you might want to query latest submission ID
-      // For now, we'll show a message that images are being processed
-      setImages([]);
-      alert('Upload successful! Images are being processed. Please check back shortly or use Submission ID lookup.');
-    } catch (error) {
-      console.error('Error loading images:', error);
-    } finally {
-      setLoadingImages(false);
-    }
-  };
+  // removed deprecated loadImagesForLatestSubmission
 
   const loadImagesForSubmission = async (submissionId) => {
     setLoadingImages(true);
@@ -69,15 +80,33 @@ export const useSubmission = () => {
     }
   };
 
+  const loadTextForSubmission = async (submissionId) => {
+    setLoadingText(true);
+    try {
+      const res = await apiService.getSubmissionText(submissionId);
+      setText(res?.text || res?.Text || '');
+      setLastSubmissionId(submissionId);
+    } catch (error) {
+      console.error('Error loading text:', error);
+      setText('');
+    } finally {
+      setLoadingText(false);
+    }
+  };
+
   return {
     selectedSessionId,
     uploading,
     images,
     loadingImages,
+    text,
+    loadingText,
     lastSubmissionId,
+    createdSubmissions,
     handleSessionChange,
     handleUpload,
     loadImagesForSubmission,
+    loadTextForSubmission,
   };
 };
 
