@@ -58,4 +58,47 @@ export const apiService = {
     if (!response.ok) throw new Error('Failed to fetch images');
     return response.json();
   },
+
+  async getSessionStudents(sessionId) {
+    const response = await fetch(`${API_BASE_URL}${ENDPOINTS.SESSION_STUDENTS(sessionId)}`);
+    if (!response.ok) throw new Error('Failed to fetch students');
+    return response.json();
+  },
+
+  async getSubmissionText(submissionId) {
+    const response = await fetch(`${API_BASE_URL}${ENDPOINTS.SUBMISSION_TEXT(submissionId)}`);
+    if (!response.ok) throw new Error('Failed to fetch text');
+    return response.json();
+  },
+
+  async getReports({ examId, from, to, page = 1, pageSize = 20 }) {
+    const params = new URLSearchParams();
+    if (examId) params.append('examId', examId);
+    if (from) params.append('from', from);
+    if (to) params.append('to', to);
+    params.append('page', String(page));
+    params.append('pageSize', String(pageSize));
+    const response = await fetch(`${API_BASE_URL}${ENDPOINTS.REPORTS_SUBMISSIONS}?${params.toString()}`);
+    if (!response.ok) throw new Error('Failed to fetch reports');
+    return response.json();
+  },
+
+  async exportReports({ examId, from, to }) {
+    const params = new URLSearchParams();
+    if (examId) params.append('examId', examId);
+    if (from) params.append('from', from);
+    if (to) params.append('to', to);
+    const response = await fetch(`${API_BASE_URL}${ENDPOINTS.REPORTS_EXPORT}?${params.toString()}`);
+    if (!response.ok) throw new Error('Failed to export');
+    const blob = await response.blob();
+    return blob;
+  },
+
+  async queryOData(query) {
+    // query should start with ?$filter=... etc
+    const url = `${API_BASE_URL}${ENDPOINTS.REPORTS_ODATA}${query?.startsWith('?') ? query : `?${query || ''}`}`;
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('Failed to query OData');
+    return response.json();
+  },
 };
