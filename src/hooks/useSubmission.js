@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { apiService } from '@services/api';
 
 /**
@@ -14,23 +14,41 @@ export const useSubmission = () => {
   const [text, setText] = useState('');
   const [loadingText, setLoadingText] = useState(false);
 
-  const handleSessionChange = async (sessionId) => {
+  const loadSessionStudents = useCallback(async (sessionId) => {
+    if (!sessionId) {
+      setCreatedSubmissions([]);
+      return;
+    }
+    try {
+      const students = await apiService.getSessionStudents(sessionId);
+      setCreatedSubmissions(students || []);
+    } catch (error) {
+      console.error('Failed to load session students', error);
+      setCreatedSubmissions([]);
+      throw error;
+    }
+  }, []);
+
+  const handleSessionChange = useCallback(async (sessionId) => {
     setSelectedSessionId(sessionId);
     setImages([]);
     setLastSubmissionId(null);
+    setText('');
     try {
-      if (sessionId) {
-        const students = await apiService.getSessionStudents(sessionId);
-        setCreatedSubmissions(students || []);
-      } else {
-        setCreatedSubmissions([]);
-      }
-      setText('');
-    } catch (e) {
-      console.error('Failed to load session students', e);
-      setCreatedSubmissions([]);
+      await loadSessionStudents(sessionId);
+    } catch {
+      // already logged in loadSessionStudents
     }
-  };
+  }, [loadSessionStudents]);
+
+  const refreshSessionStudents = useCallback(async () => {
+    if (!selectedSessionId) return;
+    try {
+      await loadSessionStudents(selectedSessionId);
+    } catch {
+      // handled
+    }
+  }, [selectedSessionId, loadSessionStudents]);
 
   const handleUpload = async (sessionId, file, isNestedZip = false) => {
     try {
@@ -107,6 +125,7 @@ export const useSubmission = () => {
     handleUpload,
     loadImagesForSubmission,
     loadTextForSubmission,
+    refreshSessionStudents,
   };
 };
 

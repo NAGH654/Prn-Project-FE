@@ -18,6 +18,12 @@ export default defineConfig({
       '@assets': path.resolve(__dirname, './src/assets'),
       '@routes': path.resolve(__dirname, './src/routes'),
       '@constants': path.resolve(__dirname, './src/constants'),
+      '@context': path.resolve(__dirname, './src/context'),
     },
+  },
+  server: {
+    host: '0.0.0.0',
+    port: parseInt(process.env.VITE_DEV_SERVER_PORT || '5174', 10),
+    strictPort: true,
   },
 })

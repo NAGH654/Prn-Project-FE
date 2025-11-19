@@ -5,9 +5,44 @@
 }
 
 .app-header {
-  text-align: center;
   color: white;
   margin-bottom: 40px;
+}
+
+.app-header__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  text-align: left;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-pill {
+  background: rgba(15, 23, 42, 0.25);
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.logout-btn {
+  border: none;
+  background: rgba(248, 250, 252, 0.15);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.logout-btn:hover {
+  background: rgba(248, 250, 252, 0.3);
 }
 
 .app-header h1 {
@@ -25,6 +60,24 @@
 .app-main {
   max-width: 1400px;
   margin: 0 auto;
+}
+
+.home-layout {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.home-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.home-sidebar {
+  width: 360px;
+  flex-shrink: 0;
 }
 
 .upload-section {
@@ -186,3 +239,17 @@
   font-weight: 600;
 }
 .tab.active { background: #646cff; color: #fff; }
+
+@media (max-width: 1024px) {
+  .home-layout {
+    flex-direction: column;
+  }
+
+  .home-sidebar {
+    width: 100%;
+  }
+
+  .home-sidebar .notification-tray {
+    max-width: 100%;
+  }
+}

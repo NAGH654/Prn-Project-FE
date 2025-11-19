@@ -12,7 +12,8 @@
       "@lib/*": ["./src/lib/*"],
       "@assets/*": ["./src/assets/*"],
       "@routes/*": ["./src/routes/*"],
-      "@constants/*": ["./src/constants/*"]
+      "@constants/*": ["./src/constants/*"],
+      "@context/*": ["./src/context/*"]
     }
   },
   "include": ["src"]

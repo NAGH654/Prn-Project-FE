@@ -1,0 +1,289 @@
+.grading-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.grading-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.1);
+  border: 1px solid rgba(15, 23, 42, 0.05);
+}
+
+.grading-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+}
+
+.summary-item {
+  background: rgba(99, 102, 241, 0.08);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.summary-item p {
+  margin: 0;
+  color: #475569;
+}
+
+.summary-item strong {
+  font-size: 22px;
+  color: #1e1b4b;
+}
+
+.grading-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.exam-card header h3 {
+  margin: 0;
+}
+
+.exam-card header p {
+  margin: 4px 0 0;
+  color: #475569;
+}
+
+.exam-stats {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.exam-stats li {
+  background: #f8fafc;
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.primary-btn {
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.danger-btn {
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: none;
+  background: #dc2626;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.grading-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.muted {
+  color: #64748b;
+}
+
+.back-link {
+  cursor: pointer;
+  color: #2563eb;
+  margin-bottom: 8px;
+}
+
+.filters {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.filters select {
+  padding: 8px 10px;
+  border-radius: 8px;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.submissions-table {
+  margin-top: 16px;
+}
+
+.submissions-header,
+.submission-row {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+  padding: 12px 0;
+  align-items: center;
+}
+
+.submissions-header {
+  font-weight: 600;
+  color: #475569;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.submission-row {
+  border: none;
+  background: transparent;
+  border-bottom: 1px solid #f1f5f9;
+  cursor: pointer;
+  text-align: left;
+}
+
+.submission-row span small {
+  display: block;
+  color: #94a3b8;
+}
+
+.status-pill {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  font-size: 12px;
+  justify-content: center;
+}
+
+.status-pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-processing {
+  background: #e0f2fe;
+  color: #075985;
+}
+
+.status-graded {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.pagination button {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: white;
+}
+
+.grading-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(320px, 1fr);
+  gap: 20px;
+}
+
+.rubric-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.rubric-item {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.rubric-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rubric-inputs {
+  display: grid;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.rubric-inputs label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.rubric-inputs input,
+.rubric-inputs textarea,
+.side-panel textarea {
+  border-radius: 10px;
+  border: 1px solid #cbd5f5;
+  padding: 8px 10px;
+}
+
+.side-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.violations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.violation-item {
+  display: flex;
+  gap: 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.info-banner {
+  background: #ecfeff;
+  padding: 12px 16px;
+  border-radius: 10px;
+  color: #0f172a;
+}
+
+.status-panel {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 12px;
+}
+
+.examiner-list {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+}
+
+.examiner-list li {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.score-summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
