@@ -30,6 +30,18 @@ const MainLayout = () => {
         </div>
         <nav style={{ marginTop: 12 }}>
           <Link className={`tab ${isActive('/')}`} to="/">Upload</Link>
+          <Link className={`tab ${isActive('/exams')}`} to="/exams" style={{ marginLeft: 8 }}>
+            Exams
+          </Link>
+          <Link className={`tab ${isActive('/sessions')}`} to="/sessions" style={{ marginLeft: 8 }}>
+            Sessions
+          </Link>
+          <Link className={`tab ${isActive('/subjects')}`} to="/subjects" style={{ marginLeft: 8 }}>
+            Subjects
+          </Link>
+          <Link className={`tab ${isActive('/semesters')}`} to="/semesters" style={{ marginLeft: 8 }}>
+            Semesters
+          </Link>
           <Link className={`tab ${isActive('/reports')}`} to="/reports" style={{ marginLeft: 8 }}>
             Reports
           </Link>

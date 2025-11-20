@@ -9,6 +9,25 @@ import {
   ExamSubmissionsPage,
   SubmissionGradingPage,
 } from '@pages/Grading';
+import {
+  ExamListPage,
+  ExamFormPage,
+  RubricManagementPage,
+  ExaminerAssignmentPage,
+} from '@pages/ExamManagement';
+import {
+  SubjectListPage,
+  SubjectFormPage,
+} from '@pages/SubjectManagement';
+import {
+  SemesterListPage,
+  SemesterFormPage,
+} from '@pages/SemesterManagement';
+import {
+  SessionListPage,
+  SessionFormPage,
+  SessionExaminerPage,
+} from '@pages/SessionManagement';
 
 /**
  * Application Routes Configuration
@@ -25,6 +44,21 @@ const AppRoutes = () => {
           <Route path="/grading" element={<AssignedExamsPage />} />
           <Route path="/grading/exams/:examId" element={<ExamSubmissionsPage />} />
           <Route path="/grading/submissions/:submissionId" element={<SubmissionGradingPage />} />
+          <Route path="/exams" element={<ExamListPage />} />
+          <Route path="/exams/create" element={<ExamFormPage />} />
+          <Route path="/exams/:examId/edit" element={<ExamFormPage />} />
+          <Route path="/exams/:examId/rubrics" element={<RubricManagementPage />} />
+          <Route path="/exams/:examId/examiners" element={<ExaminerAssignmentPage />} />
+          <Route path="/subjects" element={<SubjectListPage />} />
+          <Route path="/subjects/create" element={<SubjectFormPage />} />
+          <Route path="/subjects/:subjectId/edit" element={<SubjectFormPage />} />
+          <Route path="/semesters" element={<SemesterListPage />} />
+          <Route path="/semesters/create" element={<SemesterFormPage />} />
+          <Route path="/semesters/:semesterId/edit" element={<SemesterFormPage />} />
+          <Route path="/sessions" element={<SessionListPage />} />
+          <Route path="/sessions/create" element={<SessionFormPage />} />
+          <Route path="/sessions/:sessionId/edit" element={<SessionFormPage />} />
+          <Route path="/sessions/:sessionId/examiners" element={<SessionExaminerPage />} />
           </Route>
         </Route>
         <Route path="/login" element={<LoginPage />} />

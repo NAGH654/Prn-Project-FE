@@ -1,6 +1,8 @@
 // Application Configuration
 const API_HOST = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+const CORE_API_HOST = import.meta.env.VITE_CORE_API_BASE_URL || 'http://localhost:5000';
 export const API_BASE_URL = `${API_HOST}/api`;
+export const CORE_API_BASE_URL = `${CORE_API_HOST}/api`;
 export const IDENTITY_API_BASE_URL =
   import.meta.env.VITE_IDENTITY_API_BASE_URL || `${API_HOST}/api`;
 export const GRADING_API_BASE_URL =
@@ -12,6 +14,8 @@ const DEFAULT_AUTH_TOKEN_KEY = import.meta.env.VITE_SIGNALR_TOKEN_KEY || 'access
 export const CONFIG = {
   API_BASE_URL,
   API_HOST,
+  CORE_API_BASE_URL,
+  CORE_API_HOST,
   IDENTITY_API_BASE_URL,
   GRADING_API_BASE_URL,
   SIGNALR_HUB_URL,

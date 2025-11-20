@@ -19,6 +19,21 @@ export const ENDPOINTS = {
   GRADING_MARK_ZERO: '/grades/submissions/mark-zero',
   GRADING_SUBMISSION_STATUS: (submissionId) => `/grades/submissions/${submissionId}/grading-status`,
   GRADING_SUBMISSION_GRADES: (submissionId) => `/grades/submissions/${submissionId}/grades`,
+  // Exam Management
+  EXAMS: '/exams',
+  EXAMS_BY_ID: (examId) => `/exams/${examId}`,
+  EXAMS_BY_SUBJECT: (subjectId) => `/exams/by-subject/${subjectId}`,
+  EXAMS_BY_SEMESTER: (semesterId) => `/exams/by-semester/${semesterId}`,
+  EXAMS_PUBLISH: (examId) => `/exams/${examId}/publish`,
+  EXAMS_RUBRICS: (examId) => `/exams/${examId}/rubrics`,
+  EXAMS_RUBRICS_BULK: (examId) => `/exams/${examId}/rubrics/bulk`,
+  EXAMS_RUBRICS_BY_ID: (examId, rubricId) => `/exams/${examId}/rubrics/${rubricId}`,
+  EXAMS_SESSIONS_EXAMINERS: (sessionId) => `/exams/sessions/${sessionId}/examiners`,
+  EXAMS_SESSIONS_EXAMINERS_BY_ID: (sessionId, examinerId) => `/exams/sessions/${sessionId}/examiners/${examinerId}`,
+  // Subjects & Semesters
+  SUBJECTS: '/subjects',
+  SUBJECTS_BY_ID: (subjectId) => `/subjects/${subjectId}`,
+  SEMESTERS: '/semesters',
 };
 
 export default ENDPOINTS;
