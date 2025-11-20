@@ -12,6 +12,9 @@ export const isValidGuid = (guid) => {
   return guidRegex.test(guid);
 };
 
+// Re-export JWT utilities
+export * from './jwt';
+
 export default {
   formatFileSize,
   isValidGuid,

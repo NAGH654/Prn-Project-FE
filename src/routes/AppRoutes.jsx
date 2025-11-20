@@ -3,6 +3,7 @@ import MainLayout from '@layout/MainLayout';
 import HomePage from '@pages/HomePage';
 import ReportsPage from '@pages/Reports';
 import ProtectedRoute from '@routes/ProtectedRoute';
+import RoleProtectedRoute from '@routes/RoleProtectedRoute';
 import { LoginPage, RegisterPage } from '@pages/Auth';
 import {
   AssignedExamsPage,
@@ -41,9 +42,13 @@ const AppRoutes = () => {
           <Route element={<MainLayout />}>
             <Route index element={<HomePage />} />
           <Route path="/reports" element={<ReportsPage />} />
-          <Route path="/grading" element={<AssignedExamsPage />} />
-          <Route path="/grading/exams/:examId" element={<ExamSubmissionsPage />} />
-          <Route path="/grading/submissions/:submissionId" element={<SubmissionGradingPage />} />
+          <Route
+            element={<RoleProtectedRoute allowedRoles={['examiner', 'moderator', 'admin']} />}
+          >
+            <Route path="/grading" element={<AssignedExamsPage />} />
+            <Route path="/grading/exams/:examId" element={<ExamSubmissionsPage />} />
+            <Route path="/grading/submissions/:submissionId" element={<SubmissionGradingPage />} />
+          </Route>
           <Route path="/exams" element={<ExamListPage />} />
           <Route path="/exams/create" element={<ExamFormPage />} />
           <Route path="/exams/:examId/edit" element={<ExamFormPage />} />

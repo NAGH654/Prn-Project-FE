@@ -1,21 +1,53 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@context/AuthContext';
+import { hasRole } from '@utils/jwt';
 import gradingService from '@services/grading';
 import './Grading.css';
 
 const AssignedExamsPage = () => {
   const navigate = useNavigate();
+  const { token, isAuthenticated } = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [exams, setExams] = useState([]);
+
+  // Check authentication and role
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+
+    if (token && !hasRole(token, ['examiner', 'moderator', 'admin'])) {
+      setError('You do not have permission to access grading. Examiner role required.');
+      setLoading(false);
+      return;
+    }
+  }, [isAuthenticated, token, navigate]);
 
   const loadExams = async () => {
     setLoading(true);
     setError(null);
     try {
+      // Only load if authenticated and has correct role
+      if (!isAuthenticated) {
+        setError('Please login to access grading');
+        setLoading(false);
+        return;
+      }
+
+      if (token && !hasRole(token, ['examiner', 'moderator', 'admin'])) {
+        setError('You do not have permission to access grading. Examiner role required.');
+        setLoading(false);
+        return;
+      }
+
+      console.log('Loading exams with token:', token ? 'Token present' : 'No token');
       const data = await gradingService.getAssignedExams();
       setExams(data || []);
     } catch (err) {
+      console.error('Error loading exams:', err);
       setError(err.message || 'Failed to load exams');
     } finally {
       setLoading(false);
@@ -23,8 +55,12 @@ const AssignedExamsPage = () => {
   };
 
   useEffect(() => {
-    loadExams();
-  }, []);
+    // Only load if authentication check passed
+    if (isAuthenticated && (!token || hasRole(token, ['examiner', 'moderator', 'admin']))) {
+      loadExams();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated, token]);
 
   const totals = useMemo(() => {
     if (!exams || exams.length === 0) {

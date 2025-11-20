@@ -20,8 +20,9 @@ export default function SessionSelector({ onSessionChange, onExamChange }) {
       setSessions(data);
       if (data.length > 0) {
         const first = data[0];
-        setSelectedSessionId(first.sessionId);
-        onSessionChange?.(first.sessionId);
+        const sessionId = first.id || first.sessionId;
+        setSelectedSessionId(sessionId);
+        onSessionChange?.(sessionId);
         if (first.examId) onExamChange?.(first.examId);
       }
     } catch (err) {
@@ -36,7 +37,7 @@ export default function SessionSelector({ onSessionChange, onExamChange }) {
     const sessionId = e.target.value;
     setSelectedSessionId(sessionId);
     onSessionChange?.(sessionId);
-    const selected = sessions.find(s => s.sessionId === sessionId);
+    const selected = sessions.find(s => (s.id || s.sessionId) === sessionId);
     if (selected?.examId) onExamChange?.(selected.examId);
   };
 
@@ -81,9 +82,13 @@ export default function SessionSelector({ onSessionChange, onExamChange }) {
         {sessions.map((session) => {
           const isActive = session.isActive;
           const status = isActive ? '✓' : '✗';
+          const sessionId = session.id || session.sessionId;
+          const examName = session.examTitle || session.examName || '';
+          const sessionName = session.sessionName || '';
+          const scheduledDate = session.scheduledDate ? new Date(session.scheduledDate).toLocaleDateString() : 'Invalid Date';
           return (
-            <option key={session.sessionId} value={session.sessionId}>
-              {status} {session.examName} - {session.sessionName} ({new Date(session.startTime).toLocaleDateString()} - {new Date(session.endTime).toLocaleDateString()})
+            <option key={sessionId} value={sessionId}>
+              {status} {examName} - {sessionName} ({scheduledDate})
             </option>
           );
         })}

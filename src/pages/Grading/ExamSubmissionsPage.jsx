@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useAuth } from '@context/AuthContext';
+import { hasRole } from '@utils/jwt';
 import gradingService from '@services/grading';
 import './Grading.css';
 
@@ -16,6 +18,7 @@ const ExamSubmissionsPage = () => {
   const { examId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
+  const { token, isAuthenticated } = useAuth();
   const examState = location.state?.exam;
   const [submissions, setSubmissions] = useState([]);
   const [metadata, setMetadata] = useState({ totalCount: 0, pageNumber: 1, totalPages: 1 });
@@ -23,6 +26,20 @@ const ExamSubmissionsPage = () => {
   const [assignedToMe, setAssignedToMe] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Check authentication and role
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+
+    if (token && !hasRole(token, ['examiner', 'moderator', 'admin'])) {
+      setError('You do not have permission to access grading. Examiner role required.');
+      setLoading(false);
+      return;
+    }
+  }, [isAuthenticated, token, navigate]);
 
   const loadSubmissions = async ({ page = 1, statusFilter = status, assigned = assignedToMe } = {}) => {
     if (!examId) return;
