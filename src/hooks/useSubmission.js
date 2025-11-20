@@ -19,7 +19,15 @@ export const useSubmission = () => {
       setCreatedSubmissions([]);
       return;
     }
+    // Validate GUID format
+    const guidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!guidPattern.test(sessionId)) {
+      console.error('Invalid sessionId format in loadSessionStudents:', sessionId);
+      setCreatedSubmissions([]);
+      return;
+    }
     try {
+      console.log('Loading session students for sessionId:', sessionId);
       const students = await apiService.getSessionStudents(sessionId);
       setCreatedSubmissions(students || []);
     } catch (error) {
@@ -30,6 +38,15 @@ export const useSubmission = () => {
   }, []);
 
   const handleSessionChange = useCallback(async (sessionId) => {
+    console.log('handleSessionChange called with sessionId:', sessionId, 'Type:', typeof sessionId);
+    // Validate GUID format
+    const guidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!sessionId || !guidPattern.test(sessionId)) {
+      console.error('Invalid sessionId in handleSessionChange:', sessionId);
+      setSelectedSessionId(null);
+      setCreatedSubmissions([]);
+      return;
+    }
     setSelectedSessionId(sessionId);
     setImages([]);
     setLastSubmissionId(null);

@@ -40,17 +40,40 @@ export const apiService = {
     formData.append('SessionId', sessionId);
     formData.append('Archive', file);
 
-    const response = await fetch(`${API_BASE_URL}${ENDPOINTS.SUBMISSIONS_UPLOAD_NESTED_ZIP}`, {
-      method: 'POST',
-      body: formData,
-    });
+    console.log('Uploading nested ZIP submission, sessionId:', sessionId, 'file size:', file.size);
 
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ message: 'Upload failed' }));
-      throw new Error(error.message || 'Upload failed');
+    // Create AbortController for timeout (30 minutes for large files)
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30 * 60 * 1000);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}${ENDPOINTS.SUBMISSIONS_UPLOAD_NESTED_ZIP}`, {
+        method: 'POST',
+        body: formData,
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({ message: 'Upload failed' }));
+        throw new Error(error.message || 'Upload failed');
+      }
+
+      const result = await response.json();
+      console.log('Upload response received:', {
+        createdSubmissions: result.createdSubmissions?.length || result.CreatedSubmissions?.length || 0,
+        totalFiles: result.totalFiles || result.TotalFiles,
+        processedFiles: result.processedFiles || result.ProcessedFiles,
+      });
+      return result;
+    } catch (error) {
+      clearTimeout(timeoutId);
+      if (error.name === 'AbortError') {
+        throw new Error('Upload timeout. The file is too large or processing takes too long.');
+      }
+      throw error;
     }
-
-    return response.json();
   },
 
   async getSubmissionImages(submissionId) {

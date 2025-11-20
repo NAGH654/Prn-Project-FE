@@ -17,12 +17,28 @@ export default function SessionSelector({ onSessionChange, onExamChange }) {
       setLoading(true);
       setError(null);
       const data = await apiService.getAllSessions();
-      setSessions(data);
-      if (data.length > 0) {
-        const first = data[0];
-        setSelectedSessionId(first.sessionId);
-        onSessionChange?.(first.sessionId);
-        if (first.examId) onExamChange?.(first.examId);
+      console.log('Loaded sessions from API:', data);
+      console.log('Number of sessions:', data?.length || 0);
+      
+      // Ensure data is an array
+      const sessionsList = Array.isArray(data) ? data : [];
+      setSessions(sessionsList);
+      
+      if (sessionsList.length > 0) {
+        const first = sessionsList[0];
+        console.log('First session object:', first);
+        // Handle multiple possible property names: id, sessionId, SessionId
+        const sessionId = first.id || first.sessionId || first.SessionId;
+        const examId = first.examId || first.ExamId;
+        console.log('Extracted sessionId:', sessionId, 'examId:', examId);
+        
+        if (sessionId) {
+          setSelectedSessionId(sessionId);
+          onSessionChange?.(sessionId);
+        }
+        if (examId) onExamChange?.(examId);
+      } else {
+        console.warn('No sessions returned from API');
       }
     } catch (err) {
       setError(err.message);
@@ -34,10 +50,25 @@ export default function SessionSelector({ onSessionChange, onExamChange }) {
 
   const handleChange = (e) => {
     const sessionId = e.target.value;
+    console.log('SessionSelector handleChange - selected value:', sessionId);
+    // Validate it's a GUID format (GUIDs are 36 chars with dashes, or 32 without)
+    if (!sessionId || (sessionId.length < 32 && !sessionId.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i))) {
+      console.error('Invalid sessionId format:', sessionId, 'Length:', sessionId?.length);
+      return;
+    }
     setSelectedSessionId(sessionId);
     onSessionChange?.(sessionId);
-    const selected = sessions.find(s => s.sessionId === sessionId);
-    if (selected?.examId) onExamChange?.(selected.examId);
+    // Handle multiple possible property names: id, sessionId, SessionId
+    const selected = sessions.find(s => {
+      const id = s.id || s.sessionId || s.SessionId;
+      return id === sessionId;
+    });
+    if (selected) {
+      const examId = selected.examId || selected.ExamId;
+      if (examId) onExamChange?.(examId);
+    } else {
+      console.warn('Selected session not found in sessions list:', sessionId);
+    }
   };
 
   if (loading) {
@@ -60,11 +91,35 @@ export default function SessionSelector({ onSessionChange, onExamChange }) {
     );
   }
 
+  // Filter valid sessions for display
+  const validSessions = sessions.filter((session) => {
+    // Handle multiple possible property names: id, sessionId, SessionId
+    const sessionId = session.id || session.sessionId || session.SessionId;
+    return sessionId && (typeof sessionId === 'string' || typeof sessionId === 'object');
+  });
+
   if (sessions.length === 0) {
     return (
       <div className="session-selector">
-        <label>Session</label>
-        <div className="empty-message">No sessions found</div>
+        <label>Select Exam Session (for upload)</label>
+        <div className="empty-message">No sessions found. Please check if the API is running.</div>
+        <button onClick={loadSessions} className="retry-btn">
+          Retry
+        </button>
+      </div>
+    );
+  }
+
+  if (validSessions.length === 0 && sessions.length > 0) {
+    return (
+      <div className="session-selector">
+        <label>Select Exam Session (for upload)</label>
+        <div className="error-message">
+          Found {sessions.length} session(s) but none have valid sessionId. Check console for details.
+        </div>
+        <button onClick={loadSessions} className="retry-btn">
+          Retry
+        </button>
       </div>
     );
   }
@@ -78,15 +133,52 @@ export default function SessionSelector({ onSessionChange, onExamChange }) {
         onChange={handleChange}
         className="session-select"
       >
-        {sessions.map((session) => {
-          const isActive = session.isActive;
-          const status = isActive ? '✓' : '✗';
-          return (
-            <option key={session.sessionId} value={session.sessionId}>
-              {status} {session.examName} - {session.sessionName} ({new Date(session.startTime).toLocaleDateString()} - {new Date(session.endTime).toLocaleDateString()})
-            </option>
-          );
-        })}
+        {validSessions.map((session) => {
+            // Handle multiple possible property names: id, sessionId, SessionId
+            const sessionId = session.id || session.sessionId || session.SessionId;
+            // Convert to string if it's a GUID object
+            const sessionIdStr = typeof sessionId === 'string' ? sessionId : (sessionId?.toString() || '');
+            
+            // Handle multiple possible property names for exam name
+            const examName = session.examTitle || session.examName || session.ExamName || session.ExamTitle || '';
+            const sessionName = session.sessionName || session.SessionName || '';
+            const isActive = session.isActive || session.IsActive || false;
+            // Handle scheduledDate or startTime
+            const startTime = session.scheduledDate || session.startTime || session.StartTime;
+            const endTime = session.endTime || session.EndTime;
+            
+            const status = isActive ? '✓' : '✗';
+            let startDate = 'Invalid Date';
+            let endDate = 'Invalid Date';
+            
+            try {
+              if (startTime) {
+                const start = new Date(startTime);
+                if (!isNaN(start.getTime())) {
+                  startDate = start.toLocaleDateString();
+                }
+              }
+            } catch (e) {
+              console.warn('Error parsing startTime:', startTime, e);
+            }
+            
+            try {
+              if (endTime) {
+                const end = new Date(endTime);
+                if (!isNaN(end.getTime())) {
+                  endDate = end.toLocaleDateString();
+                }
+              }
+            } catch (e) {
+              console.warn('Error parsing endTime:', endTime, e);
+            }
+            
+            return (
+              <option key={sessionIdStr} value={sessionIdStr}>
+                {status} {examName} - {sessionName} ({startDate} - {endDate})
+              </option>
+            );
+          })}
       </select>
     </div>
   );
